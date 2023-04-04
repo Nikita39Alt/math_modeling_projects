@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
 #Дифур
-frames = 60
-t=np.linspace(0, 300, frames)
+frames = 250
+t= np.linspace(0 , 16 , frames)
 
 G = 6.67 * 10**(-11)
 M = 6 * 10**(24)
@@ -15,9 +15,9 @@ k = 0.35
 def diff(w, t):
     x, vx, y, vy = w
     dxdt = vx
-    dvxdt = ((G * m * M * x) / (x**2 + y**2)**1.5) - (k * vx)
+    dvxdt = (-((G * m * M * x) / (x**2 + y**2)**1.5) + (k  * vx))/m
     dydt = vy
-    dvydt = ((G * m * M * y) / (x**2 + y**2)**1.5) - (k * vy)
+    dvydt = (-((G * m * M * y) / (x**2 + y**2)**1.5) + (k * vy))/m
     return dxdt, dvxdt, dydt, dvydt
 
 x0 = -240 *10**3
@@ -56,7 +56,7 @@ def animate(i):
 
 ani = FuncAnimation(fig, animate, frames=frames, interval=30)
 
-edge  = 240 *10**3
+edge  = 350 * 10**3
 plt.axis('equal')
 plt.xlim(-edge, edge)
 plt.ylim(-edge, edge)
