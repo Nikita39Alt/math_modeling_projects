@@ -14,11 +14,19 @@ k = 0.35
 
 def diff(w, t):
     x, vx, y, vy = w
-    dxdt = vx
-    dvxdt = (-((G * m * M * x) / (x**2 + y**2)**1.5) + (k  * vx))/m
-    dydt = vy
-    dvydt = (-((G * m * M * y) / (x**2 + y**2)**1.5) + (k * vy))/m
-    return dxdt, dvxdt, dydt, dvydt
+    if y<150000:
+        dxdt = vx
+        dvxdt = (-((G * m * M * x) / (x**2 + y**2)**1.5) + (k  * vx))/m
+        dydt = vy
+        dvydt = (-((G * m * M * y) / (x**2 + y**2)**1.5) + (k * vy))/m
+        return dxdt, dvxdt, dydt, dvydt
+    else:
+        dxdt = vx
+        dvxdt = -((G  * M * x) / (x**2 + y**2)**1.5)
+        dydt = vy
+        dvydt = -((G * M * y) / (x**2 + y**2)**1.5)
+        return dxdt, dvxdt, dydt, dvydt
+
 
 x0 = -240 *10**3
 vx0 = 21600 * np.cos(45)
