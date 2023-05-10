@@ -27,6 +27,7 @@ vel = []
 vel2 = []
 
 temp = []
+temp_atm = []
 temp2 = []
 
 height = []
@@ -38,11 +39,16 @@ def diff(x, vx, y, vy, T):
     global resistance
     dvxdt = -(G * M * x) / ((x**2 + y**2)**1.5) - vx * np.abs(vx) * S * c_res / 2 / m * air_density(np.sqrt(x**2 + y**2) - radius_earth) * resistance
     dvydt = -(G * M * y) / ((x**2 + y**2)**1.5) - vy * np.abs(vy) * S * c_res / 2 / m * air_density(np.sqrt(x**2 + y**2) - radius_earth) * resistance
-    #dTdt = np.sqrt(vx ** 2 + vy ** 2) * (air_temperature(np.sqrt(x**2 + y**2) - radius_earth) - T) * air_heatexchange(air_temperature(np.sqrt(x**2 + y**2) - radius_earth)) * air_density(np.sqrt(x**2 + y**2) - radius_earth) / c_ka * (S_bok)
-    dTdt = m/2*(dvxdt**2 + dvydt**2)
+    dTdt = np.sqrt(vx ** 2 + vy ** 2) * (air_temperature(np.sqrt(x**2 + y**2) - radius_earth) - T) * air_heatexchange(air_temperature(np.sqrt(x**2 + y**2) - radius_earth)) * air_density(np.sqrt(x**2 + y**2) - radius_earth) / c_ka * (S_bok)
+    if T + dTdt < air_temperature(np.sqrt(x**2 + y**2) - radius_earth) and air_temperature(np.sqrt(x**2 + y**2) - radius_earth) <= T:
+        dTdt = air_temperature(np.sqrt(x**2 + y**2) - radius_earth) - T
+    elif T + dTdt > air_temperature(np.sqrt(x**2 + y**2) - radius_earth) and air_temperature(np.sqrt(x**2 + y**2) - radius_earth) >= T:
+        dTdt = air_temperature(np.sqrt(x**2 + y**2) - radius_earth) - T
+    dTdt += 2*(dvxdt**2 + dvydt**2)/c_ka
     if resistance == 1:
         vel.append(np.sqrt(vx**2+vy**2))
         temp.append(T)
+        temp_atm.append(air_temperature(np.sqrt(x**2 + y**2) - radius_earth))
         height.append(np.sqrt(x**2+y**2) - radius_earth)
     else:
         vel2.append(np.sqrt(vx**2+vy**2))
@@ -181,3 +187,14 @@ plt.title('Температура КА во сремя спуска в атмо�
 plt.grid()
 plt.savefig('temperature.png')
 os.system('start temperature.png')
+
+if choice == '2':
+    fig, axes = plt.subplots()
+    plt.plot(np.arange(0,len(temp)), temp, color='g')
+    plt.plot(np.arange(0,len(temp_atm)), temp_atm, color='cyan')
+    plt.xlabel('Время (с)')
+    plt.ylabel('Абсолютная температура (К)')
+    plt.title('Температура КА во сремя спуска в атмосфере Земли в сравнении с температурой ISA')
+    plt.grid()
+    plt.savefig('atmtemp.png')
+    os.system('start atmtemp.png')
